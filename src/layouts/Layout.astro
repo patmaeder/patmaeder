@@ -1,7 +1,5 @@
 ---
 import * as CONST from "../const";
-import {consoleLogDestination} from "astro/dist/core/logger/console";
-import {Astro} from "astro/env";
 interface Props {
 	title?: string;
 	description?: string;
@@ -13,7 +11,6 @@ const {
 	description = CONST.DESCRIPTION,
 	image // TODO: default image
 } = Astro.props;
-console.log(Astro.site)
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -24,6 +21,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<meta name="theme-color" content="#FCFCFC">
 		<meta name="generator" content={Astro.generator} />
 
 		<!-- Fonts -->
