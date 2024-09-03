@@ -1,0 +1,50 @@
+---
+import logoDefault from '@public/patmaeder_logo.svg?raw';
+import logoLight from '@public/patmaeder_logo_light.svg?raw';
+import * as CONST from "../const";
+---
+<header class="flex justify-between items-center py-8">
+	<div id="logo" class="w-44" x-data>
+		<template x-if="$store.theme.appearance === 'LIGHT'">
+			<Fragment set:html={logoDefault} />
+		</template>
+		<template x-if="$store.theme.appearance === 'DARK'">
+			<Fragment set:html={logoLight} />
+		</template>
+	</div>
+	<div class="flex flex-row gap-3">
+		<nav class="nav">
+			<a href="/" class="navItem">Home</a>
+			<a href="/blog" class="navItem">Topics</a>
+			<a href="/about" class="navItem">About</a>
+		</nav>
+		<button class="nav" title="Toggle between dark- and lightmode" x-data @click="$store.theme.toggleMode()">
+			<span class="navItem block !px-3">
+				<template x-if="$store.theme.mode === 'SYSTEM'">
+					<i class="ri-macbook-line ri-lg"></i>
+				</template>
+				<template x-if="$store.theme.mode === 'LIGHT'">
+					<i class="ri-sun-line ri-lg"></i>
+				</template>
+				<template x-if="$store.theme.mode === 'DARK'">
+					<i class="ri-moon-fill ri-lg"></i>
+				</template>
+			</span>
+		</button>
+		<a href={CONST.GITHUB_REPO} class="nav">
+			<span class="navItem block !px-3">
+				<i class="ri-github-fill ri-xl"></i>
+			</span>
+		</a>
+	</div>
+</header>
+
+<style is:global>
+	.nav {
+		@apply flex flex-row items-center gap-2 p-2 bg-gray-100 dark:bg-zinc-900 shadow rounded backdrop-blur;
+	}
+
+	.navItem {
+		@apply px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-800 rounded;
+	}
+</style>

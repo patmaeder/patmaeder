@@ -1,5 +1,7 @@
 ---
 import * as CONST from "../const";
+import 'remixicon/fonts/remixicon.css'
+
 interface Props {
 	title?: string;
 	description?: string;
@@ -36,6 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<!-- Primary Meta Tags -->
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		<meta name="author" content={CONST.AUTHOR} />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -51,7 +54,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={new URL(image, Astro.url)} />
 	</head>
-	<body>
+	<body class="bg-gray-100 dark:bg-zinc-950 text-black dark:text-white">
 		<slot />
 	</body>
 </html>
