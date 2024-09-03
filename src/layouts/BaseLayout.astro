@@ -1,0 +1,12 @@
+---
+import Layout from "./Layout.astro";
+import Header from "../components/Header.astro";
+---
+<Layout>
+    <div class="container flex flex-col items-stretch justify-start">
+        <Header/>
+        <main class="h-screen w-full">
+            <slot />
+        </main>
+    </div>
+</Layout>

@@ -58,3 +58,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<slot />
 	</body>
 </html>
+
+<style is:global>
+	:root {
+		scroll-behavior: smooth;
+	}
+</style>
