@@ -1,0 +1,23 @@
+---
+export interface MarkdownHeading {
+    depth: number;
+    text?: string;
+    slug?: string
+    children?: MarkdownHeading[];
+}
+
+interface Props {
+    headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+---
+<ul class="ml-3 [&>li]:my-2 [&>li]:text-sm">
+    <slot />
+    { headings.map(heading => (
+        <li>
+            <a href={`#${heading.slug != 'introduction' ? heading.slug : ''}`} x-data :data-inView=`$store.inView.has('${heading.slug}')` class="data-[inView='true']:text-amber-500 hover:opacity-60">{heading.text}</a>
+            { heading.children && heading.children.length > 0 && <Astro.self headings={heading.children} /> }
+        </li>
+    ))}
+</ul>

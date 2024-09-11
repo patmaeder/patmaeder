@@ -6,7 +6,7 @@ import * as CONST from "../const";
 const pathSegments = new URL(Astro.request.url).pathname.split('/');
 const currentPath = '/' + pathSegments[1];
 ---
-<header class="flex justify-between items-center py-8">
+<header class="container flex justify-between items-center py-8">
 	<div id="logo" class="w-44" x-data>
 		<template x-if="$store.theme.appearance === 'LIGHT'">
 			<Fragment set:html={logoDefault} />
@@ -44,14 +44,10 @@ const currentPath = '/' + pathSegments[1];
 
 <style is:global>
 	.nav {
-		@apply flex flex-row items-center gap-2 p-2 bg-gray-100 dark:bg-zinc-900 shadow rounded backdrop-blur;
-
-		& > a {
-			@apply font-serif font-medium text-nowrap data-[active]:font-semibold data-[active]:text-my-sin-500;
-		}
+		@apply flex flex-row items-center gap-2 p-2;
 	}
 
 	.navItem {
-		@apply px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-800 rounded;
+		@apply px-4 py-2 font-serif font-semibold data-[active]:font-bold data-[active]:text-amber-500 text-nowrap hover:bg-neutral-200 dark:hover:bg-neutral-900 rounded;
 	}
 </style>

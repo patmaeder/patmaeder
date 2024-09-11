@@ -1,0 +1,19 @@
+---
+import {type ImageMetadata} from "astro";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+}
+
+const { title, description, image } = Astro.props;
+---
+<BaseLayout title={title} description={description} image={image}>
+    <section class="container flex flex-col items-center justify-center gap-4 py-12 mb-16 border-t border-b border-gray-300 dark:border-gray-600">
+        <h1 class="text-3xl font-semibold font-serif">{title}</h1>
+        <p>{description}</p>
+    </section>
+    <slot />
+</BaseLayout>

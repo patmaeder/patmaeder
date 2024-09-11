@@ -1,5 +1,6 @@
 import type { Alpine } from 'alpinejs'
 import persist from '@alpinejs/persist'
+import intersect from '@alpinejs/intersect'
 
 enum MODE {
     SYSTEM = "SYSTEM",
@@ -16,6 +17,7 @@ interface ThemeStore {
 
 export default (Alpine: Alpine) => {
     Alpine.plugin(persist);
+    Alpine.plugin(intersect)
 
     Alpine.store('theme', {
         mode: Alpine.$persist(MODE.SYSTEM).as("mode") as unknown as MODE,
@@ -32,4 +34,6 @@ export default (Alpine: Alpine) => {
             });
         },
     } as ThemeStore);
+
+    Alpine.store("inView", new Set());
 }

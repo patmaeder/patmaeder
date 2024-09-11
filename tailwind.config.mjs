@@ -4,6 +4,12 @@ export default {
 	theme: {
 		container: {
 			center: true,
+			screens: {
+				sm: '600px',
+				md: '728px',
+				lg: '984px',
+				xl: '1080px',
+			},
 		},
 		fontFamily: {
 			sans: ["noto-sans", "sans-serif"],
@@ -11,22 +17,24 @@ export default {
 		},
 		extend: {
 			colors: {
-				'my-sin': {
-					'50': '#fffdea',
-					'100': '#fff8c5',
-					'200': '#fff185',
-					'300': '#ffe446',
-					'400': '#ffd31b',
-					'500': '#fbaf00',
-					'600': '#e28800',
-					'700': '#bb5f02',
-					'800': '#984908',
-					'900': '#7c3c0b',
-					'950': '#481e00',
+				'cyprus': {
+					'50': '#effefb',
+					'100': '#c9fef8',
+					'200': '#94fbf0',
+					'300': '#56f2e7',
+					'400': '#23ded6',
+					'500': '#0bc1bd',
+					'600': '#059c9b',
+					'700': '#097b7c',
+					'800': '#0d6062',
+					'900': '#104f51',
+					'950': '#023c40',
 				},
 			},
 		},
 	},
-	plugins: [],
+	plugins: [
+		require('@tailwindcss/typography'),
+	],
 	darkMode: "selector",
 }

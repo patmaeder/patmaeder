@@ -1,0 +1,197 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { Image, getImage } from 'astro:assets';
+import { Schema } from 'astro-seo-schema';
+import {type ImageMetadata } from "astro";
+import NestedHeading, { type MarkdownHeading } from "@components/NestedHeading.astro";
+import SquigglyLine from "../../components/SquigglyLine.astro";
+
+export async function getStaticPaths() {
+    const posts = await getCollection('posts');
+    return posts.map((post: CollectionEntry<'posts'>) => ({
+        params: { post: post.slug },
+        props: { post },
+    }));
+}
+
+const { post }: { post: CollectionEntry<'posts'> } = Astro.props;
+const { Content, headings } = await post.render();
+
+const metaImages = [
+    await getImage({ src: post.data.heroImage, format: 'jpeg', quality: 75, width: 1080, height: 1080 }),
+    await getImage({ src: post.data.heroImage, format: 'jpeg', quality: 75, width: 1280, height: 720 }),
+    await getImage({ src: post.data.heroImage, format: 'jpeg', quality: 75, width: 1920, height: 1080 }),
+];
+
+function formatDateLocal(date: globalThis.Date) {
+    return date.toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+function formatDateStandardized(date: globalThis.Date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function deepNestHeadings(headings: MarkdownHeading[]): MarkdownHeading {
+    const root: MarkdownHeading = { depth: 1, children: [] };
+
+    function nest(parent: MarkdownHeading, headings: MarkdownHeading[]): void {
+        let i = 0;
+        while (i < headings.length) {
+            if (headings[i].depth === parent.depth + 1) {
+                const child = { ...headings[i], children: [] };
+                parent.children!.push(child);
+                i++;
+            } else if (headings[i].depth === parent.depth + 2) {
+                nest(parent.children![parent.children!.length - 1], headings.slice(i));
+                while (i < headings.length && headings[i].depth > parent.depth + 1) {
+                    i++;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    nest(root, headings);
+    return root;
+}
+---
+<BaseLayout
+    title={post.data.title}
+    description={post.data.description}
+    image={post.data.heroImage as ImageMetadata}
+>
+    <main>
+        <div class="w-full h-[28rem] grid grid-cols-1 grid-rows-1 mb-16 overflow-clip">
+            <div class="container col-start-1 col-span-1 row-start-1 row-span-1 flex flex-col justify-end py-20">
+                <p class="mb-4 text-neutral-100">
+                    <time datetime={formatDateStandardized(post.data.modDate ?? post.data.pubDate)}>{formatDateLocal(post.data.modDate ?? post.data.pubDate)}</time>
+                    {post.data.modDate && (
+                        <>
+                            <span class="ml-2 pl-2 py-0.5 border-l opacity-80">First published: </span>
+                            <time datetime={formatDateStandardized(post.data.pubDate)} class="opacity-80">{formatDateLocal(post.data.pubDate)}</time>
+                        </>
+                    )}
+                </p>
+                <h1 class="mb-5 text-neutral-100 text-4xl font-bold">{post.data.title}</h1>
+                {post.data.tags && post.data.tags?.length > 0 && (
+                    <div class="flex flex-row gap-2">
+                        {post.data.tags.map((tag: string) => (
+                                <span class="py-0.5 px-4 bg-neutral-900 bg-opacity-60 text-neutral-100 text-sm rounded-full">{tag}</span>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <Image
+                src={post.data.heroImage}
+                widths={[540, 720, 1080, 1400, 1920, post.data.heroImage.width]}
+                alt=""
+                class="col-start-1 col-span-1 row-start-1 row-span-1 -z-10 parallax"
+            />
+        </div>
+        <div class="container grid grid-cols-4 mb-16">
+            <div class="col-span-3 prose dark:prose-invert" x-data>
+                <Content />
+                <SquigglyLine />
+                <section>
+                    <p>Thanks for reading! I really hope you enjoyed this article and that it was helpful to you in some way. I'll see you in the next one.</p>
+                    <table class="bg-zinc-800 text-neutral-100">
+                        <tbody>
+                            <tr class="border-b-0 border-t-8 border-zinc-800">
+                                <td class="w-8 p-0 text-right text-neutral-500">1</td>
+                                <td class="p-0"></td>
+                                <td class="py-0">If you see any bugs or just have some ideas on how to make this article even better,</td>
+                            </tr>
+                            <tr class="border-b-0">
+                                <td class="w-8 p-0 text-right text-neutral-500">2</td>
+                                <td class="p-0"></td>
+                                <td class="py-0">I'd really, really love it if you'd open an issue on the GitHub repo for this blog.</td>
+                            </tr>
+                            <tr class="border-b-8 border-b-zinc-800">
+                                <td class="w-8 p-0 text-right text-neutral-500">3</td>
+                                <td class="p-0 px-1 text-neutral-500">+</td>
+                                <td class="py-0 bg-lime-400 bg-opacity-40">
+                                    That way we can all learn and grow together!
+                                    <span class="inline-flex h-full bg-lime-500 bg-opacity-60">&lt;3</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="p-3 bg-zinc-900 text-right">
+                                    <span x-data class="inline-flex flex-row items-center gap-8 ml-auto">
+                                        <span class="text-neutral-500">1 file changed</span>
+                                        <button @click="commitAndPush" class="flex flex-row items-center gap-2 py-2 px-10 bg-sky-700 hover:bg-sky-800 cursor-pointer" aria-disabled="true">
+                                            <span>Commit & Push</span>
+                                            <i class="ri-git-branch-line ri-lg"></i>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <SquigglyLine />
+            </div>
+            <aside class="col-span-1 sticky top-16 h-fit" x-data>
+                <h2 class="font-semibold">Table of Contents</h2>
+                <NestedHeading headings={deepNestHeadings(headings).children!} />
+            </aside>
+        </div>
+    </main>
+
+    <!-- JSON LD -->
+    <Schema
+        slot="head"
+        item={{
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.data.title,
+            image: metaImages.map((image) => new URL(image.src, Astro.site).href),
+            datePublished: formatDateStandardized(post.data.pubDate),
+            ...(post.data.modDate && { dateModified: formatDateStandardized(post.data.modDate) }),
+            author: [{
+                "@type": "Person",
+                name: "Patrick Mäder",
+                url: new URL('/about', Astro.site).href
+            }]
+        }}
+    />
+</BaseLayout>
+
+<script is:inline>
+    function commitAndPush() {
+        console.log("I'm not sure what you were expecting to see happen here, but it seems like you know how to open the dev tools, which is great! \n But since you are here already, I wanna share my most used emojis with you: ✨👀🫶🏻");
+    }
+</script>
+
+<style is:global>
+    @supports (animation-timeline: view()) {
+        .parallax {
+            animation: parallax;
+            animation-fill-mode: both;
+            animation-duration: 1ms;
+            animation-timing-function: linear;
+            animation-timeline: view(block 0 calc(100vh - 7.5rem));
+        }
+
+        @keyframes parallax {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-320px);
+            }
+        }
+    }
+
+    * {
+        scroll-margin-top: 2.5rem;
+    }
+</style>

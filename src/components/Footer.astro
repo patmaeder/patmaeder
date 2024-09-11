@@ -1,0 +1,22 @@
+---
+import logoLight from '@public/patmaeder_logo_light.svg?raw';
+
+const today = new Date();
+---
+<footer class="flex flex-col">
+    <div class="bg-cyprus-950 text-white">
+        <div class="container flex justify-between items-start py-12">
+            <div class="flex flex-col gap-2">
+                <div x-data aria-label="Logo patmaeder" class="logo w-32 [&_*]:fill-white">
+                    <Fragment set:html={logoLight} />
+                </div>
+                <span class="text-sm font-light">Hope you enjoyed your stay!</span>
+            </div>
+            <nav class="flex items-center gap-4 text-sm font-light">
+                <a href="/imprint" title="Link to the imprint" class="hover:opacity-70">Imprint</a>
+                <span>|</span>
+                <a href="/privacy-policy" title="Link to the privacy policy" class="hover:opacity-70">Privacy Policy</a>
+            </nav>
+        </div>
+    </div>
+</footer>

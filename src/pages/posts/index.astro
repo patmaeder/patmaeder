@@ -1,0 +1,30 @@
+---
+import {getCollection} from "astro:content";
+import SubpageLayout from "@layouts/SubpageLayout.astro";
+import {Image} from "astro:assets";
+
+const posts = await getCollection<'posts'>('posts');
+
+const title = "Posts";
+const description = "Everything that I'm interested in";
+---
+<SubpageLayout title={title} description={description}>
+    <main class="container">
+        <ul class="grid grid-cols-3 gap-8 mb-16">
+            {posts.map((post) => (
+                <li class="h-full pb-8 border-b border-gray-300 dark:border-gray-600">
+                    <a href={`/posts/${post.slug}`} class="flex flex-col gap-2">
+                        <Image
+                            src={post.data.heroImage}
+                            alt=""
+                            widths={[320, 540, 720]}
+                            class="mb-4 rounded-md block aspect-video object-cover hover:scale-105 transition-transform transform-gpu duration-200"
+                        />
+                        <p class="font-medium mb-2 leading-relaxed line-clamp-2">{post.data.title}</p>
+                        <p class="text-gray-500 text-sm leading-relaxed line-clamp-2">{post.data.description}</p>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </main>
+</SubpageLayout>

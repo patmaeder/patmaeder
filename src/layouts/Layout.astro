@@ -1,6 +1,7 @@
 ---
-import * as CONST from "../const";
 import 'remixicon/fonts/remixicon.css'
+import * as CONST from '../const';
+import {getImage} from 'astro:assets';
 
 interface Props {
 	title?: string;
@@ -11,9 +12,11 @@ interface Props {
 const {
 	title = CONST.TITLE,
 	description = CONST.DESCRIPTION,
-	image // TODO: default image
+	image = CONST.HERO_IMAGE
 } = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const metaImage = await getImage({ src: image, width: 1200, height: 630, quality: 75, format: 'jpeg' });
 ---
 
 <!doctype html>
@@ -45,14 +48,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:url" content={Astro.url} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={new URL(image, Astro.url)} />
+		<meta property="og:image" content={new URL(metaImage.src, Astro.site)} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
 		<meta property="twitter:url" content={Astro.url} />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={new URL(image, Astro.url)} />
+		<meta property="twitter:image" content={new URL(metaImage.src, Astro.site)} />
+
+		<slot name="head" />
 	</head>
 	<body class="bg-gray-100 dark:bg-zinc-950 text-black dark:text-white">
 		<slot />
